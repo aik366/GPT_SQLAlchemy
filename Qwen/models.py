@@ -13,6 +13,8 @@ class User(Base):
     name = Column(String, nullable=False)
     surname = Column(String, nullable=False)
     ege = Column(Integer, nullable=False)
+    reg_at = Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<ID='{self.user_id}', Имя='{self.name}', Фамилия='{self.surname}', лет='{self.ege}'>"
+        reg_time = self.reg_at.strftime("%Y-%m-%d %H:%M")
+        return f"<ID='{self.user_id}', Имя='{self.name}', Фамилия='{self.surname}', лет='{self.ege}', дата регистрации='{reg_time}'/>"

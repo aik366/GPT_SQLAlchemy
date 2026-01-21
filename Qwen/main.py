@@ -48,17 +48,25 @@ def update_user(user_id, name, surname, ege=26):
         session.close()
 
 
-def all_view():
+def view_all():
+    """Показать всех пользователей"""
     session = get_session()
     try:
         users = session.query(User).all()
-        print("Все записи:", users)
+        if not users:
+            print("📭 Нет пользователей в базе")
+        else:
+            print("📋 Все пользователи:")
+            for user in users:
+                reg_time = user.reg_at.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"ID: {user.user_id} | Имя: {user.name} | Фамилия: {user.surname} | Зарегистрирован: {reg_time}")
+        return users
     finally:
         session.close()
 
 
 if __name__ == "__main__":
-    # add_user("Тигран", "Галстян", 20)
+    # add_user("Айк", "Галстян", 53)
     # update_user("Айк", "Галстян", 53)
-    del_user(4573354)
-    all_view()
+    del_user(7486894)
+    view_all()
