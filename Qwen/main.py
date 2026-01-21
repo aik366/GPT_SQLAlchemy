@@ -1,55 +1,56 @@
 from database import engine, get_session
 from models import Base, User
+from random import randint
 
 # Создаём таблицы (если не существуют)
 Base.metadata.create_all(bind=engine)
 
-# Работаем с данными
-session = get_session()
-
 
 def add_user(name, surname, ege=18):
+    session = get_session()
+    user_id = randint(1000000, 9999999)
     try:
-        user = session.query(User).filter(User.name == name, User.surname == surname, User.ege == ege).first()
-        if not user:
-            new_item = User(name=name, surname=surname, ege=ege)
-            session.add(new_item)
-            session.commit()
-            print("Создан:", new_item)
-        else:
-            print(f"Пользователь {name} {surname} уже существует")
-
+        user = User(user_id=user_id, name=name, surname=surname, ege=ege)
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        print(f"✅ Пользователь добавлен: ", user)  
     finally:
         session.close()
 
 
-def del_user(name, surname):
+def del_user(user_id):
+    session = get_session()
     try:
-        user = session.query(User).filter(User.name == name, User.surname == surname).first()
+        user = session.query(User).filter(User.user_id == user_id).first()
         if user:
             session.delete(user)
             session.commit()
-            print(f"Пользователь {name} {surname} удалён")
+            print(f"🗑️ Пользователь {user.name} {user.surname} удалён")
         else:
-            print(f"Пользователь {name} {surname} не найден")
+            print(f"⚠️ Пользователь с ID {user_id} не найден")
     finally:
         session.close()
 
 
-def update_user(name, surname, ege):
+def update_user(user_id, name, surname, ege=26):
+    session = get_session()
     try:
-        user = session.query(User).filter(User.name == name, User.surname == surname).first()
+        user = session.query(User).filter(User.user_id == user_id).first()
         if user:
             user.ege = ege
             session.commit()
+            session.refresh(user)
             print(f"Пользователь {name} {surname} обновлён")
+        else:
+            print(f"⚠️ Пользователь с ID {user_id} не найден")
     finally:
         session.close()
 
 
 def all_view():
+    session = get_session()
     try:
-        # Читаем все
         users = session.query(User).all()
         print("Все записи:", users)
     finally:
@@ -57,7 +58,7 @@ def all_view():
 
 
 if __name__ == "__main__":
-    add_user("Айк", "Галстян", 54)
-    update_user("Айк", "Галстян", 53)
-    # del_user("Айк", "Галстян")
+    # add_user("Тигран", "Галстян", 20)
+    # update_user("Айк", "Галстян", 53)
+    del_user(4573354)
     all_view()
