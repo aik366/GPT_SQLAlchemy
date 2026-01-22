@@ -59,14 +59,14 @@ def view_all():
             print("📋 Все пользователи:")
             for user in users:
                 reg_time = user.reg_at.strftime("%Y-%m-%d %H:%M:%S")
-                print(f"ID: {user.user_id} | Имя: {user.name} | Фамилия: {user.surname} | Зарегистрирован: {reg_time}")
+                print(f"ID: {user.user_id} | {user.name} {user.surname} ({user.ege}) | Зарегистрирован: {reg_time}")
         return users
     finally:
         session.close()
 
 
 if __name__ == "__main__":
-    # add_user("Айк", "Галстян", 53)
+    # add_user("Тигран", "Галстян")
     # update_user("Айк", "Галстян", 53)
     del_user(7486894)
     view_all()
